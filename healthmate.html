@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthMate – Campus Wellness Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F3EE;
+    --surface: #FFFFFF;
+    --surface2: #EDEAE3;
+    --primary: #2D6A4F;
+    --primary-light: #D8F3DC;
+    --primary-mid: #74C69D;
+    --accent: #F4A261;
+    --accent-light: #FFF0E0;
+    --danger: #E76F51;
+    --danger-light: #FDE8E2;
+    --info: #457B9D;
+    --info-light: #E8F4FD;
+    --text: #1A1A2E;
+    --text-muted: #6B6B7A;
+    --text-light: #9E9EA8;
+    --border: rgba(0,0,0,0.08);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-xs: 6px;
+    --shadow: 0 2px 16px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── TOP BAR ─── */
+  .topbar {
+    background: var(--primary);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-icon {
+    width: 34px; height: 34px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .brand-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+  .brand-tagline {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    font-weight: 300;
+  }
+  .topbar-date {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    text-align: right;
+  }
+
+  /* ─── NAV TABS ─── */
+  .nav-tabs {
+    display: flex;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 64px;
+    z-index: 99;
+  }
+  .nav-tab {
+    flex: 1;
+    padding: 14px 8px 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: background 0.2s;
+    position: relative;
+  }
+  .nav-tab:hover { background: var(--bg); }
+  .nav-tab.active { background: var(--surface); }
+  .nav-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 16px; right: 16px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px 3px 0 0;
+  }
+  .nav-tab-icon { font-size: 20px; }
+  .nav-tab-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-tab.active .nav-tab-label { color: var(--primary); font-weight: 600; }
+
+  /* ─── SCREENS ─── */
+  .screen { display: none; padding: 20px 16px 100px; max-width: 480px; margin: 0 auto; }
+  .screen.active { display: block; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 20px 0 12px;
+  }
+  .section-label:first-child { margin-top: 4px; }
+
+  /* ─── GREETING CARD ─── */
+  .greeting-card {
+    background: linear-gradient(135deg, var(--primary) 0%, #1B4332 100%);
+    border-radius: var(--radius);
+    padding: 20px;
+    color: #fff;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .greeting-card::before {
+    content: '🌿';
+    position: absolute;
+    right: 16px; top: 12px;
+    font-size: 48px;
+    opacity: 0.25;
+  }
+  .greeting-card h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .greeting-card p { font-size: 13px; opacity: 0.8; font-weight: 300; }
+  .streak-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .streak-badge {
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #fff;
+    font-weight: 500;
+  }
+  .streak-badge span { font-size: 16px; margin-right: 4px; }
+
+  /* ─── TIP CARD ─── */
+  .tip-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .tip-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .tip-icon-wrap {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .tip-body { flex: 1; }
+  .tip-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .tip-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+  .tip-tag {
+    display: inline-block;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 2px 8px;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  /* ─── STRESS SCREEN ─── */
+  .stress-selector { display: flex; gap: 8px; margin-bottom: 16px; }
+  .stress-opt {
+    flex: 1;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 12px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .stress-opt .sopt-emoji { font-size: 22px; display: block; margin-bottom: 4px; }
+  .stress-opt .sopt-label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+  .stress-opt.sel-low  { border-color: #2D6A4F; background: #D8F3DC; }
+  .stress-opt.sel-low .sopt-label { color: #1B4332; }
+  .stress-opt.sel-mod  { border-color: #E9C46A; background: #FFF8E1; }
+  .stress-opt.sel-mod .sopt-label { color: #7C5400; }
+  .stress-opt.sel-high { border-color: #E76F51; background: #FDE8E2; }
+  .stress-opt.sel-high .sopt-label { color: #7D2E0E; }
+
+  .stress-meter {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .meter-label { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+  .meter-bar-bg {
+    background: var(--surface2);
+    border-radius: 6px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .meter-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.6s ease, background 0.4s;
+    width: 25%;
+    background: var(--primary);
+  }
+  .meter-icons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 10px;
+    color: var(--text-light);
+  }
+
+  /* ─── BREATHING WIDGET ─── */
+  .breathing-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .breathing-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .breathing-card p { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+  .breath-ring-wrap {
+    position: relative;
+    width: 110px; height: 110px;
+    margin: 0 auto 12px;
+    cursor: pointer;
+  }
+  .breath-ring {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    border: 3px solid var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    transition: all 0.8s ease;
+    user-select: none;
+  }
+  .breath-ring.inhale  { transform: scale(1.2); background: #B7E4C7; border-color: #1B4332; }
+  .breath-ring.hold    { transform: scale(1.2); background: #FFF0E0; border-color: #F4A261; color: #7C4A00; }
+  .breath-ring.exhale  { transform: scale(0.9); background: var(--primary-light); border-color: var(--primary); }
+  .breath-phase-label  { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+  .breath-counter      { font-size: 11px; color: var(--text-light); }
+  .btn-breath-start {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 28px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-breath-start:hover { background: #1B4332; transform: scale(1.03); }
+  .btn-breath-start:active { transform: scale(0.97); }
+
+  /* ─── JOURNAL ─── */
+  .journal-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .journal-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  textarea.journal-input {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    resize: none;
+    line-height: 1.6;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea.journal-input:focus { border-color: var(--primary); }
+  .journal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .char-count { font-size: 11px; color: var(--text-light); }
+  .btn-save {
+    background: var(--primary-light);
+    color: var(--primary);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s;
+  }
+  .btn-save:hover { background: var(--primary-mid); color: #fff; }
+
+  /* ─── REMINDERS ─── */
+  .reminder-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+  }
+  .reminder-left { display: flex; gap: 12px; align-items: center; }
+  .reminder-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .reminder-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .reminder-time { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Toggle switch */
+  .toggle-wrap { display: flex; align-items: center; gap: 8px; }
+  .toggle {
+    width: 42px; height: 24px;
+    border-radius: 12px;
+    background: #D0D0D8;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.25s;
+    flex-shrink: 0;
+  }
+  .toggle.on { background: var(--primary); }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    top: 3px; left: 3px;
+    transition: left 0.25s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .toggle.on::after { left: 21px; }
+
+  /* ─── RESOURCES SCREEN ─── */
+  .resource-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+  }
+  .resource-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .res-left { display: flex; align-items: center; gap: 12px; }
+  .res-icon-wrap {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .res-title { font-size: 14px; font-weight: 600; color: var(--text); font-family: 'Syne', sans-serif; }
+  .res-sub   { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+  .res-chevron { font-size: 18px; color: var(--text-light); }
+
+  /* Booking form */
+  .booking-form {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+    display: none;
+  }
+  .booking-form.open { display: block; animation: fadeUp 0.25s ease; }
+  .booking-form h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .form-group { margin-bottom: 12px; }
+  .form-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+  .form-input, .form-select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+  .form-input:focus, .form-select:focus { border-color: var(--primary); }
+  .btn-primary {
+    width: 100%;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 0.3px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: #1B4332; transform: scale(1.01); }
+  .btn-success {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+    margin-top: 10px;
+  }
+
+  /* Chat */
+  .chat-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+  .chat-header {
+    background: var(--primary);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .counselor-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+  }
+  .counselor-name { font-size: 14px; font-weight: 600; color: #fff; font-family: 'Syne', sans-serif; }
+  .counselor-status { font-size: 11px; color: rgba(255,255,255,0.75); }
+  .online-dot {
+    width: 7px; height: 7px;
+    background: #52D88A;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 4px;
+  }
+  .chat-messages {
+    padding: 14px;
+    background: var(--bg);
+    min-height: 120px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .chat-bubble-in {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 12px 2px;
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.6;
+    max-width: 80%;
+    color: var(--text);
+    box-shadow: var(--shadow);
+  }
+  .chat-bubble-out {
+    background: var(--primary);
+    border-radius: 12px 12px 2px 12px;
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.6;
+    max-width: 80%;
+    color: #fff;
+    align-self: flex-end;
+  }
+  .chat-bubble-time { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+  .chat-input-row {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    align-items: center;
+  }
+  .chat-input {
+    flex: 1;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .chat-input:focus { border-color: var(--primary); }
+  .chat-send-btn {
+    width: 36px; height: 36px;
+    background: var(--primary);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .chat-send-btn:hover { background: #1B4332; transform: scale(1.05); }
+
+  /* Hotlines */
+  .hotlines-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+  .hotline-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .hotline-item:last-child { border-bottom: none; }
+  .hotline-item:hover { background: var(--bg); }
+  .hotline-left { display: flex; align-items: center; gap: 10px; }
+  .hotline-icon {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .hotline-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .hotline-num  { font-size: 12px; color: var(--info); font-weight: 600; }
+
+  /* Events calendar */
+  .events-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+  .event-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .event-item:last-child { border-bottom: none; }
+  .event-item:hover { background: var(--bg); }
+  .event-date-badge {
+    background: var(--info-light);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    text-align: center;
+    min-width: 44px;
+    flex-shrink: 0;
+  }
+  .event-month { font-size: 9px; color: var(--info); font-weight: 700; text-transform: uppercase; }
+  .event-day   { font-size: 18px; color: #1D3557; font-weight: 700; line-height: 1.1; font-family: 'Syne', sans-serif; }
+  .event-name  { font-size: 13px; font-weight: 600; color: var(--text); font-family: 'Syne', sans-serif; }
+  .event-loc   { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .event-type-badge {
+    margin-left: auto;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* Toast notification */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1A1A2E;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    white-space: nowrap;
+    z-index: 200;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Bottom nav padding spacer */
+  .bottom-spacer { height: 20px; }
+
+  /* Notification badge */
+  .notif-dot {
+    width: 8px; height: 8px;
+    background: var(--danger);
+    border-radius: 50%;
+    position: absolute;
+    top: 8px; right: calc(50% - 14px);
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">🌿</div>
+    <div>
+      <div class="brand-name">HealthMate</div>
+      <div class="brand-tagline">Campus Wellness Companion</div>
+    </div>
+  </div>
+  <div class="topbar-date" id="topDate"></div>
+</header>
+
+<!-- NAV TABS -->
+<nav class="nav-tabs">
+  <button class="nav-tab active" onclick="switchTab('tips',this)" id="tab-tips">
+    <span class="nav-tab-icon">💡</span>
+    <span class="nav-tab-label">Tips</span>
+  </button>
+  <button class="nav-tab" onclick="switchTab('stress',this)" id="tab-stress" style="position:relative">
+    <span class="nav-tab-icon">🧘</span>
+    <span class="nav-tab-label">Stress</span>
+    <div class="notif-dot" id="stressDot"></div>
+  </button>
+  <button class="nav-tab" onclick="switchTab('resources',this)" id="tab-resources">
+    <span class="nav-tab-icon">🏥</span>
+    <span class="nav-tab-label">Resources</span>
+  </button>
+</nav>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  SCREEN 1: DAILY WELLNESS TIPS            -->
+<!-- ══════════════════════════════════════════ -->
+<section class="screen active" id="screen-tips">
+
+  <div class="greeting-card">
+    <h2 id="greetingText">Good morning! 👋</h2>
+    <p>Here are today's wellness tips curated for campus life.</p>
+    <div class="streak-row">
+      <div class="streak-badge"><span>🔥</span>5-day streak</div>
+      <div class="streak-badge"><span>⭐</span>3 tips read</div>
+    </div>
+  </div>
+
+  <div class="section-label">Today's Picks</div>
+
+  <div class="tip-card" onclick="markTip(this,'#E6F1FB')">
+    <div class="tip-icon-wrap" style="background:#E6F1FB">💧</div>
+    <div class="tip-body">
+      <div class="tip-title">Stay Hydrated</div>
+      <div class="tip-desc">Drink at least 8 glasses of water throughout the day. Proper hydration boosts focus, energy, and mood during long study sessions.</div>
+      <span class="tip-tag">Physical Health</span>
+    </div>
+  </div>
+
+  <div class="tip-card" onclick="markTip(this,'#EAF3DE')">
+    <div class="tip-icon-wrap" style="background:#EAF3DE">🥦</div>
+    <div class="tip-body">
+      <div class="tip-title">Eat Your Greens</div>
+      <div class="tip-desc">Add at least one serving of vegetables to every meal. Nutrients from greens support brain function and keep your immune system strong.</div>
+      <span class="tip-tag" style="background:#EAF3DE;color:#2D6A4F">Nutrition</span>
+    </div>
+  </div>
+
+  <div class="tip-card" onclick="markTip(this,'#FAEEDA')">
+    <div class="tip-icon-wrap" style="background:#FAEEDA">🚶</div>
+    <div class="tip-body">
+      <div class="tip-title">10-Minute Walk</div>
+      <div class="tip-desc">A short walk between classes reduces anxiety and refreshes your mind. Even campus hallways count — just move your body!</div>
+      <span class="tip-tag" style="background:#FAEEDA;color:#7C4A00">Movement</span>
+    </div>
+  </div>
+
+  <div class="tip-card" onclick="markTip(this,'#FBEAF0')">
+    <div class="tip-icon-wrap" style="background:#FBEAF0">😴</div>
+    <div class="tip-body">
+      <div class="tip-title">Sleep 7–9 Hours</div>
+      <div class="tip-desc">Quality sleep consolidates memory, balances stress hormones, and is essential for academic performance especially during exam season.</div>
+      <span class="tip-tag" style="background:#FBEAF0;color:#7D2E5A">Sleep</span>
+    </div>
+  </div>
+
+  <div class="tip-card" onclick="markTip(this,'#E6F1FB')">
+    <div class="tip-icon-wrap" style="background:#E6F1FB">🤝</div>
+    <div class="tip-body">
+      <div class="tip-title">Connect Socially</div>
+      <div class="tip-desc">Spend 15 minutes with a friend or classmate. Social connection is one of the strongest predictors of mental wellness for college students.</div>
+      <span class="tip-tag">Mental Health</span>
+    </div>
+  </div>
+
+  <div class="tip-card" onclick="markTip(this,'#EAF3DE')">
+    <div class="tip-icon-wrap" style="background:#EAF3DE">📵</div>
+    <div class="tip-body">
+      <div class="tip-title">Digital Detox Break</div>
+      <div class="tip-desc">Take a 30-minute break from all screens. Reduces eye strain and mental fatigue, giving your brain time to rest and reset between tasks.</div>
+      <span class="tip-tag" style="background:#EAF3DE;color:#2D6A4F">Mindfulness</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  SCREEN 2: STRESS MANAGEMENT              -->
+<!-- ══════════════════════════════════════════ -->
+<section class="screen" id="screen-stress">
+
+  <div class="section-label">How are you feeling right now?</div>
+  <div class="stress-selector">
+    <div class="stress-opt sel-low" onclick="setStress('low',this)">
+      <span class="sopt-emoji">😌</span>
+      <span class="sopt-label">Low</span>
+    </div>
+    <div class="stress-opt" onclick="setStress('mod',this)">
+      <span class="sopt-emoji">😐</span>
+      <span class="sopt-label">Moderate</span>
+    </div>
+    <div class="stress-opt" onclick="setStress('high',this)">
+      <span class="sopt-emoji">😰</span>
+      <span class="sopt-label">High</span>
+    </div>
+  </div>
+
+  <div class="stress-meter">
+    <div class="meter-label" id="meterLabel">Stress level: <strong>Low</strong> — Great job keeping balanced!</div>
+    <div class="meter-bar-bg">
+      <div class="meter-bar-fill" id="meterFill" style="width:20%;background:#2D6A4F"></div>
+    </div>
+    <div class="meter-icons">
+      <span>😌 Calm</span>
+      <span>😐 Moderate</span>
+      <span>😰 High stress</span>
+    </div>
+  </div>
+
+  <div class="section-label">Guided Breathing Exercise</div>
+  <div class="breathing-card">
+    <h3>🫁 4-7-8 Breathing Technique</h3>
+    <p>Inhale 4s · Hold 7s · Exhale 8s — reduces cortisol in minutes</p>
+    <div class="breath-ring-wrap" onclick="handleBreathClick()">
+      <div class="breath-ring" id="breathRing">Tap to start</div>
+    </div>
+    <div class="breath-phase-label" id="breathPhaseLabel">Tap the circle to begin</div>
+    <div class="breath-counter" id="breathCounter">0 cycles completed</div>
+    <br>
+    <button class="btn-breath-start" onclick="handleBreathClick()" id="breathBtn">Start Exercise</button>
+  </div>
+
+  <div class="section-label">Daily Journal</div>
+  <div class="journal-card">
+    <h3>📝 Write freely</h3>
+    <textarea class="journal-input" id="journalText" rows="5"
+      placeholder="How was your day? What's weighing on you? You can write anything here — this is your private space..."
+      oninput="updateCharCount()"></textarea>
+    <div class="journal-footer">
+      <span class="char-count" id="charCount">0 characters</span>
+      <button class="btn-save" onclick="saveJournal()">Save Entry 💾</button>
+    </div>
+  </div>
+
+  <div class="section-label">Self-Care Reminders</div>
+
+  <div class="reminder-card">
+    <div class="reminder-left">
+      <div class="reminder-icon" style="background:#D8F3DC">💧</div>
+      <div>
+        <div class="reminder-name">Hydration check</div>
+        <div class="reminder-time">Every 2 hours · 8AM–8PM</div>
+      </div>
+    </div>
+    <div class="toggle on" id="r1" onclick="toggleReminder('r1','Hydration check')"></div>
+  </div>
+
+  <div class="reminder-card">
+    <div class="reminder-left">
+      <div class="reminder-icon" style="background:#FFF0E0">🧘</div>
+      <div>
+        <div class="reminder-name">Breathing break</div>
+        <div class="reminder-time">Daily at 12:00 PM & 6:00 PM</div>
+      </div>
+    </div>
+    <div class="toggle on" id="r2" onclick="toggleReminder('r2','Breathing break')"></div>
+  </div>
+
+  <div class="reminder-card">
+    <div class="reminder-left">
+      <div class="reminder-icon" style="background:#FBEAF0">😴</div>
+      <div>
+        <div class="reminder-name">Bedtime reminder</div>
+        <div class="reminder-time">Daily at 10:00 PM</div>
+      </div>
+    </div>
+    <div class="toggle" id="r3" onclick="toggleReminder('r3','Bedtime reminder')"></div>
+  </div>
+
+  <div class="reminder-card">
+    <div class="reminder-left">
+      <div class="reminder-icon" style="background:#E6F1FB">📓</div>
+      <div>
+        <div class="reminder-name">Journal entry</div>
+        <div class="reminder-time">Daily at 8:00 PM</div>
+      </div>
+    </div>
+    <div class="toggle" id="r4" onclick="toggleReminder('r4','Journal entry')"></div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  SCREEN 3: CAMPUS HEALTH RESOURCES        -->
+<!-- ══════════════════════════════════════════ -->
+<section class="screen" id="screen-resources">
+
+  <div class="section-label">Campus Health Center</div>
+
+  <div class="resource-card" onclick="window.open('#','_blank')">
+    <div class="res-left">
+      <div class="res-icon-wrap" style="background:#E6F1FB">🏥</div>
+      <div>
+        <div class="res-title">Visit Health Center</div>
+        <div class="res-sub">Open Mon–Fri · 8:00 AM – 5:00 PM</div>
+      </div>
+    </div>
+    <span class="res-chevron">›</span>
+  </div>
+
+  <div class="resource-card" onclick="toggleBooking()">
+    <div class="res-left">
+      <div class="res-icon-wrap" style="background:#EAF3DE">📅</div>
+      <div>
+        <div class="res-title">Book an Appointment</div>
+        <div class="res-sub">Choose date, time & service type</div>
+      </div>
+    </div>
+    <span class="res-chevron" id="bookingChevron">›</span>
+  </div>
+
+  <!-- Booking form -->
+  <div class="booking-form" id="bookingForm">
+    <h3>📋 Appointment Booking</h3>
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input class="form-input" type="text" placeholder="e.g. Maria Santos" id="bName">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Student ID</label>
+      <input class="form-input" type="text" placeholder="e.g. 2023-00123">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Service Type</label>
+      <select class="form-select">
+        <option>General Check-up</option>
+        <option>Mental Health Consultation</option>
+        <option>Physical Therapy</option>
+        <option>Nutrition Counseling</option>
+        <option>Dental Consultation</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Preferred Date</label>
+      <input class="form-input" type="date" id="bDate">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Preferred Time</label>
+      <select class="form-select">
+        <option>8:00 AM</option>
+        <option>9:00 AM</option>
+        <option>10:00 AM</option>
+        <option>11:00 AM</option>
+        <option>1:00 PM</option>
+        <option>2:00 PM</option>
+        <option>3:00 PM</option>
+        <option>4:00 PM</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="submitBooking()">Confirm Appointment</button>
+    <div class="btn-success" id="bookingSuccess">✅ Appointment booked! You'll receive a confirmation email.</div>
+  </div>
+
+  <div class="section-label">Chat with a Counselor</div>
+  <div class="chat-card">
+    <div class="chat-header">
+      <div class="counselor-avatar">JR</div>
+      <div>
+        <div class="counselor-name">Counselor Jane R.</div>
+        <div class="counselor-status"><span class="online-dot"></span>Online · Student Wellness Dept.</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div>
+        <div class="chat-bubble-in">Hi there! I'm here to support your mental wellness journey. How are you feeling today? 😊</div>
+        <div class="chat-bubble-time" style="font-size:10px;color:var(--text-light);margin-top:2px">9:00 AM</div>
+      </div>
+      <div>
+        <div class="chat-bubble-in">Feel free to share anything — stress, academics, relationships. This is a safe space.</div>
+        <div class="chat-bubble-time" style="font-size:10px;color:var(--text-light);margin-top:2px">9:00 AM</div>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send-btn" onclick="sendChat()">↑</button>
+    </div>
+  </div>
+
+  <div class="section-label">Emergency Hotlines</div>
+  <div class="hotlines-card">
+    <div class="hotline-item" onclick="showToast('Calling Crisis Helpline…')">
+      <div class="hotline-left">
+        <div class="hotline-icon" style="background:#FDE8E2">🆘</div>
+        <div>
+          <div class="hotline-name">Crisis Helpline</div>
+          <div style="font-size:11px;color:var(--text-muted)">24/7 mental health crisis</div>
+        </div>
+      </div>
+      <div class="hotline-num">1-800-273-8255</div>
+    </div>
+    <div class="hotline-item" onclick="showToast('Calling Campus Security…')">
+      <div class="hotline-left">
+        <div class="hotline-icon" style="background:#E6F1FB">🚨</div>
+        <div>
+          <div class="hotline-name">Campus Security</div>
+          <div style="font-size:11px;color:var(--text-muted)">On-site emergency response</div>
+        </div>
+      </div>
+      <div class="hotline-num">ext. 911</div>
+    </div>
+    <div class="hotline-item" onclick="showToast('Calling Substance Support…')">
+      <div class="hotline-left">
+        <div class="hotline-icon" style="background:#FFF0E0">💊</div>
+        <div>
+          <div class="hotline-name">Substance Support</div>
+          <div style="font-size:11px;color:var(--text-muted)">Addiction & recovery help</div>
+        </div>
+      </div>
+      <div class="hotline-num">1-800-662-4357</div>
+    </div>
+    <div class="hotline-item" onclick="showToast('Calling Suicide Prevention…')">
+      <div class="hotline-left">
+        <div class="hotline-icon" style="background:#EAF3DE">🤲</div>
+        <div>
+          <div class="hotline-name">Suicide Prevention</div>
+          <div style="font-size:11px;color:var(--text-muted)">988 Lifeline · always available</div>
+        </div>
+      </div>
+      <div class="hotline-num">988</div>
+    </div>
+  </div>
+
+  <div class="section-label">Wellness Events Calendar</div>
+  <div class="events-card">
+    <div class="event-item">
+      <div class="event-date-badge"><div class="event-month">Apr</div><div class="event-day">18</div></div>
+      <div>
+        <div class="event-name">Mindfulness Workshop</div>
+        <div class="event-loc">📍 Student Center, Room 201</div>
+      </div>
+      <div class="event-type-badge" style="background:#D8F3DC;color:#1B4332">Free</div>
+    </div>
+    <div class="event-item">
+      <div class="event-date-badge"><div class="event-month">Apr</div><div class="event-day">22</div></div>
+      <div>
+        <div class="event-name">Yoga on the Quad</div>
+        <div class="event-loc">📍 Outdoor Amphitheater</div>
+      </div>
+      <div class="event-type-badge" style="background:#D8F3DC;color:#1B4332">Free</div>
+    </div>
+    <div class="event-item">
+      <div class="event-date-badge"><div class="event-month">Apr</div><div class="event-day">25</div></div>
+      <div>
+        <div class="event-name">Nutrition Talk: Eat Smart</div>
+        <div class="event-loc">📍 Health Sciences Bldg.</div>
+      </div>
+      <div class="event-type-badge" style="background:#E6F1FB;color:#185FA5">RSVP</div>
+    </div>
+    <div class="event-item">
+      <div class="event-date-badge"><div class="event-month">May</div><div class="event-day">3</div></div>
+      <div>
+        <div class="event-name">Stress Relief Fair</div>
+        <div class="event-loc">📍 Main Campus Grounds</div>
+      </div>
+      <div class="event-type-badge" style="background:#D8F3DC;color:#1B4332">Free</div>
+    </div>
+    <div class="event-item">
+      <div class="event-date-badge"><div class="event-month">May</div><div class="event-day">10</div></div>
+      <div>
+        <div class="event-name">Mental Health Awareness Day</div>
+        <div class="event-loc">📍 University Gymnasium</div>
+      </div>
+      <div class="event-type-badge" style="background:#FBEAF0;color:#7D2E5A">Keynote</div>
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
+</section>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── TAB SWITCHING
+function switchTab(name, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'stress') document.getElementById('stressDot').style.display = 'none';
+}
+
+// ── DATE / GREETING
+(function() {
+  const now = new Date();
+  const h = now.getHours();
+  let greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('greetingText').textContent = greet + '! 👋';
+  const opts = { weekday:'short', month:'short', day:'numeric' };
+  document.getElementById('topDate').innerHTML = now.toLocaleDateString('en-US', opts) + '<br>' + now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+})();
+
+// ── TIP CARD MARK AS READ
+function markTip(card, color) {
+  if (card.dataset.read) return;
+  card.dataset.read = '1';
+  card.style.opacity = '0.6';
+  card.style.borderLeft = '4px solid #2D6A4F';
+  showToast('Tip noted! Keep it up 🌿');
+}
+
+// ── STRESS SELECTOR
+function setStress(level, el) {
+  document.querySelectorAll('.stress-opt').forEach(o => o.className = 'stress-opt');
+  el.classList.add('sel-' + level);
+  const labels = {
+    low:  ['Low', '20%', '#2D6A4F', 'Low — Great job keeping balanced! 🌿'],
+    mod:  ['Moderate', '55%', '#E9C46A', 'Moderate — Try a breathing exercise below. 🧘'],
+    high: ['High', '90%', '#E76F51', 'High — Please reach out to a counselor. ❤️']
+  };
+  const [name, w, color, msg] = labels[level];
+  document.getElementById('meterFill').style.width = w;
+  document.getElementById('meterFill').style.background = color;
+  document.getElementById('meterLabel').innerHTML = `Stress level: <strong>${name}</strong> — ${msg}`;
+  showToast('Stress level set to ' + name);
+}
+
+// ── BREATHING
+let breathRunning = false, breathInterval = null, breathCycles = 0, breathStep = 0;
+const breathPhases = [
+  { label: 'Inhale slowly... 4s', cls: 'inhale', dur: 4000 },
+  { label: 'Hold your breath... 7s', cls: 'hold', dur: 7000 },
+  { label: 'Exhale completely... 8s', cls: 'exhale', dur: 8000 }
+];
+function handleBreathClick() {
+  if (!breathRunning) startBreath(); else stopBreath();
+}
+function startBreath() {
+  breathRunning = true;
+  document.getElementById('breathBtn').textContent = 'Stop Exercise';
+  document.getElementById('breathRing').textContent = 'Inhale...';
+  runBreathStep(0);
+}
+function runBreathStep(step) {
+  if (!breathRunning) return;
+  const phase = breathPhases[step % 3];
+  const ring = document.getElementById('breathRing');
+  ring.className = 'breath-ring ' + phase.cls;
+  ring.textContent = phase.label.split('...')[0];
+  document.getElementById('breathPhaseLabel').textContent = phase.label;
+  if (step % 3 === 2) {
+    breathCycles++;
+    document.getElementById('breathCounter').textContent = breathCycles + ' cycle' + (breathCycles !== 1 ? 's' : '') + ' completed';
+  }
+  breathInterval = setTimeout(() => runBreathStep(step + 1), phase.dur);
+}
+function stopBreath() {
+  breathRunning = false;
+  clearTimeout(breathInterval);
+  const ring = document.getElementById('breathRing');
+  ring.className = 'breath-ring';
+  ring.textContent = 'Tap to start';
+  document.getElementById('breathPhaseLabel').textContent = 'Tap the circle to begin';
+  document.getElementById('breathBtn').textContent = 'Start Exercise';
+  showToast('Breathing session saved 🌬️');
+}
+
+// ── JOURNAL
+function updateCharCount() {
+  const len = document.getElementById('journalText').value.length;
+  document.getElementById('charCount').textContent = len + ' character' + (len !== 1 ? 's' : '');
+}
+function saveJournal() {
+  const txt = document.getElementById('journalText').value.trim();
+  if (!txt) { showToast('Write something first ✏️'); return; }
+  showToast('Journal entry saved! 📓');
+  document.getElementById('journalText').style.borderColor = '#2D6A4F';
+  setTimeout(() => { document.getElementById('journalText').style.borderColor = ''; }, 2000);
+}
+
+// ── REMINDERS
+function toggleReminder(id, name) {
+  const el = document.getElementById(id);
+  el.classList.toggle('on');
+  const on = el.classList.contains('on');
+  showToast((on ? '🔔 ' : '🔕 ') + name + ' reminder ' + (on ? 'enabled' : 'disabled'));
+}
+
+// ── BOOKING FORM
+function toggleBooking() {
+  const form = document.getElementById('bookingForm');
+  const ch = document.getElementById('bookingChevron');
+  const open = form.classList.toggle('open');
+  ch.textContent = open ? '˅' : '›';
+  if (open) form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function submitBooking() {
+  const name = document.getElementById('bName').value.trim();
+  if (!name) { showToast('Please enter your name'); return; }
+  const success = document.getElementById('bookingSuccess');
+  success.style.display = 'block';
+  showToast('Appointment booked! ✅');
+  setTimeout(() => { success.style.display = 'none'; toggleBooking(); }, 3500);
+}
+
+// ── CHAT
+const chatReplies = [
+  "Thank you for sharing that with me. How long have you been feeling this way?",
+  "That sounds really challenging. Remember, it's okay to ask for help. 💚",
+  "I hear you. Let's work through this together. Would you like to schedule a session?",
+  "Your feelings are completely valid. Take a deep breath — you're not alone.",
+  "I'm glad you reached out. Can you tell me more about what's been on your mind?",
+  "That's a lot to carry. Is there something specific you'd like to focus on today?"
+];
+let chatReplyIdx = 0;
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const container = document.getElementById('chatMessages');
+  const now = new Date().toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+
+  // User bubble
+  const userDiv = document.createElement('div');
+  userDiv.style.alignSelf = 'flex-end';
+  userDiv.innerHTML = `<div class="chat-bubble-out">${msg}</div><div class="chat-bubble-time" style="text-align:right">${now}</div>`;
+  container.appendChild(userDiv);
+  input.value = '';
+  container.scrollTop = container.scrollHeight;
+
+  // Counselor reply
+  setTimeout(() => {
+    const reply = chatReplies[chatReplyIdx % chatReplies.length];
+    chatReplyIdx++;
+    const repDiv = document.createElement('div');
+    repDiv.innerHTML = `<div class="chat-bubble-in">${reply}</div><div class="chat-bubble-time">${now}</div>`;
+    container.appendChild(repDiv);
+    container.scrollTop = container.scrollHeight;
+  }, 1200);
+}
+
+// ── TOAST
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── STRESS DOT: show after 5 seconds
+setTimeout(() => {
+  if (!document.getElementById('tab-stress').classList.contains('active')) {
+    document.getElementById('stressDot').style.display = 'block';
+  }
+}, 5000);
+document.getElementById('stressDot').style.display = 'none';
+</script>
+</body>
+</html>
